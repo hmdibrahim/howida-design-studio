@@ -1,0 +1,141 @@
+---
+import { getRelativeLocaleUrl } from 'astro:i18n';
+import { Image } from 'astro:assets';
+import iconOnCream from '../assets/brand/icon-on-cream.png';
+import Icon from './Icon.astro';
+import { useTranslations, otherLang } from '../i18n/utils';
+import type { Lang } from '../i18n/ui';
+
+interface Props {
+  lang: Lang;
+  path?: string;
+}
+
+const { lang, path = '' } = Astro.props;
+const t = useTranslations(lang);
+const other = otherLang(lang);
+
+const navItems = [
+  { key: 'home', match: '', href: getRelativeLocaleUrl(lang, '') },
+  { key: 'about', match: 'about', href: getRelativeLocaleUrl(lang, 'about') },
+  { key: 'services', match: 'services', href: getRelativeLocaleUrl(lang, 'services') },
+  { key: 'contact', match: 'contact', href: getRelativeLocaleUrl(lang, 'contact') },
+] as const;
+
+function isActive(match: string) {
+  if (match === '') return path === '';
+  return path === match || path.startsWith(`${match}/`);
+}
+
+const langSwitchHref = getRelativeLocaleUrl(other, path);
+---
+
+<header class="sticky top-0 z-50 border-b border-gold/15 bg-cream/95 backdrop-blur supports-[backdrop-filter]:bg-cream/85">
+  <div class="container-page flex h-[4.5rem] items-center justify-between gap-4 py-3">
+    <a href={getRelativeLocaleUrl(lang, '')} class="flex shrink-0 items-center gap-2.5 sm:gap-3">
+      <Image src={iconOnCream} alt="" width={44} height={44} loading="eager" fetchpriority="high" class="h-10 w-10 sm:h-11 sm:w-11" />
+      <span class="text-lg font-semibold leading-none tracking-tight text-ink sm:text-xl">
+        {t.meta.siteName}
+      </span>
+    </a>
+
+    <nav aria-label={lang === 'ar' ? 'التنقل الرئيسي' : 'Primary'} class="hidden lg:flex lg:items-center lg:gap-8">
+      {
+        navItems.map((item) => (
+          <a
+            href={item.href}
+            aria-current={isActive(item.match) ? 'page' : undefined}
+            class:list={[
+              'relative py-2 text-[0.95rem] font-medium text-body transition-colors hover:text-ink',
+              { 'text-ink after:absolute after:-bottom-0.5 after:start-0 after:h-0.5 after:w-full after:bg-gold-dark': isActive(item.match) },
+            ]}
+          >
+            {t.nav[item.key]}
+          </a>
+        ))
+      }
+    </nav>
+
+    <div class="hidden items-center gap-3 lg:flex">
+      <a
+        href={langSwitchHref}
+        class="rounded-full border border-gold/40 px-4 py-2 text-sm font-medium text-gold-deep transition-colors hover:border-gold-dark hover:bg-gold-light/40"
+        hreflang={other}
+      >
+        {t.nav.switchLang}
+      </a>
+      <a
+        href={getRelativeLocaleUrl(lang, 'contact')}
+        class="rounded-full bg-gold-dark px-5 py-2.5 text-sm font-semibold text-white shadow-sm transition-colors hover:bg-espresso-2"
+      >
+        {t.nav.bookConsultation}
+      </a>
+    </div>
+
+    <button
+      type="button"
+      id="menu-toggle"
+      class="flex h-11 w-11 items-center justify-center rounded-lg text-ink lg:hidden"
+      aria-expanded="false"
+      aria-controls="mobile-nav"
+    >
+      <span class="sr-only">{t.nav.menuOpen}</span>
+      <Icon name="menu" class="h-6 w-6" id="menu-icon-open" />
+      <Icon name="close" class="hidden h-6 w-6" id="menu-icon-close" />
+    </button>
+  </div>
+
+  <div id="mobile-nav" class="hidden border-t border-gold/15 bg-cream lg:hidden" role="dialog" aria-modal="true" aria-label={lang === 'ar' ? 'قائمة التنقل' : 'Navigation menu'}>
+    <nav aria-label={lang === 'ar' ? 'التنقل للجوال' : 'Mobile'} class="container-page flex flex-col gap-1 py-4">
+      {
+        navItems.map((item) => (
+          <a
+            href={item.href}
+            aria-current={isActive(item.match) ? 'page' : undefined}
+            class:list={[
+              'rounded-lg px-3 py-3 text-base font-medium text-body transition-colors hover:bg-gold-light/40 hover:text-ink',
+              { 'bg-gold-light/50 text-ink': isActive(item.match) },
+            ]}
+          >
+            {t.nav[item.key]}
+          </a>
+        ))
+      }
+      <a href={langSwitchHref} hreflang={other} class="rounded-lg px-3 py-3 text-base font-medium text-gold-deep hover:bg-gold-light/40">
+        {t.nav.switchLang}
+      </a>
+      <a
+        href={getRelativeLocaleUrl(lang, 'contact')}
+        class="mt-2 rounded-full bg-gold-dark px-5 py-3 text-center text-base font-semibold text-white transition-colors hover:bg-espresso-2"
+      >
+        {t.nav.bookConsultation}
+      </a>
+    </nav>
+  </div>
+</header>
+
+<script>
+  const toggle = document.getElementById('menu-toggle');
+  const panel = document.getElementById('mobile-nav');
+  const iconOpen = document.getElementById('menu-icon-open');
+  const iconClose = document.getElementById('menu-icon-close');
+
+  if (toggle && panel && iconOpen && iconClose) {
+    toggle.addEventListener('click', () => {
+      const isOpen = toggle.getAttribute('aria-expanded') === 'true';
+      toggle.setAttribute('aria-expanded', String(!isOpen));
+      panel.classList.toggle('hidden', isOpen);
+      iconOpen.classList.toggle('hidden', !isOpen);
+      iconClose.classList.toggle('hidden', isOpen);
+    });
+
+    panel.querySelectorAll('a').forEach((link) => {
+      link.addEventListener('click', () => {
+        toggle.setAttribute('aria-expanded', 'false');
+        panel.classList.add('hidden');
+        iconOpen.classList.remove('hidden');
+        iconClose.classList.add('hidden');
+      });
+    });
+  }
+</script>

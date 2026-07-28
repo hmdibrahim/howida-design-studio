@@ -1,0 +1,13 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import HomeView from '../../components/views/HomeView.astro';
+import { useTranslations } from '../../i18n/utils';
+import { organizationSchema } from '../../lib/schema';
+
+const lang = 'ar';
+const t = useTranslations(lang);
+---
+
+<BaseLayout lang={lang} title={t.meta.defaultTitle} description={t.meta.defaultDescription} path="" jsonLd={organizationSchema(lang)}>
+  <HomeView lang={lang} />
+</BaseLayout>

@@ -1,0 +1,73 @@
+---
+import '../styles/global.css';
+import cairoLatinWoff2 from '@fontsource-variable/cairo/files/cairo-latin-wght-normal.woff2?url';
+import cairoArabicWoff2 from '@fontsource-variable/cairo/files/cairo-arabic-wght-normal.woff2?url';
+import Seo from '../components/Seo.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import { dirFor, type Lang } from '../i18n/utils';
+
+interface Props {
+  lang: Lang;
+  title: string;
+  description: string;
+  path?: string;
+  ogImage?: string;
+  noindex?: boolean;
+  jsonLd?: Record<string, unknown> | Record<string, unknown>[];
+}
+
+const { lang, title, description, path = '', ogImage, noindex, jsonLd } = Astro.props;
+const dir = dirFor(lang);
+const fontPreloadHref = lang === 'ar' ? cairoArabicWoff2 : cairoLatinWoff2;
+---
+
+<!doctype html>
+<html lang={lang} dir={dir}>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#f7f3ec" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
+    <link rel="shortcut icon" href="/favicon.ico" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+    <link rel="preload" as="font" type="font/woff2" href={fontPreloadHref} crossorigin="anonymous" />
+    <meta name="generator" content={Astro.generator} />
+    <Seo lang={lang} title={title} description={description} path={path} ogImage={ogImage} noindex={noindex} jsonLd={jsonLd} />
+  </head>
+  <body class="flex min-h-screen flex-col bg-cream text-ink">
+    <a href="#main-content" class="skip-link">
+      {lang === 'ar' ? 'الانتقال إلى المحتوى' : 'Skip to content'}
+    </a>
+    <Header lang={lang} path={path} />
+    <main id="main-content" tabindex="-1" class="flex-1 focus:outline-none">
+      <slot />
+    </main>
+    <Footer lang={lang} />
+  </body>
+</html>
+
+<style>
+  .skip-link {
+    position: absolute;
+    top: -3rem;
+    left: 1rem;
+    z-index: 100;
+    background-color: var(--color-espresso);
+    color: white;
+    padding: 0.75rem 1.25rem;
+    border-radius: 0.375rem;
+    font-weight: 600;
+    transition: top 0.15s ease;
+  }
+
+  .skip-link:focus {
+    top: 1rem;
+  }
+
+  [dir='rtl'] .skip-link {
+    left: auto;
+    right: 1rem;
+  }
+</style>

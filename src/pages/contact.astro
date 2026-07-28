@@ -1,0 +1,19 @@
+---
+export const prerender = false;
+
+import BaseLayout from '../layouts/BaseLayout.astro';
+import ContactView from '../components/views/ContactView.astro';
+import { useTranslations } from '../i18n/utils';
+
+const lang = 'en';
+const t = useTranslations(lang);
+const title = `${t.contact.title} | ${t.meta.siteName}`;
+const description = 'Get in touch with Howida design studio for interior design and fit-out enquiries across the UAE. Call, email, or send a message.';
+
+const statusParam = Astro.url.searchParams.get('status');
+const status = statusParam === 'success' || statusParam === 'error' ? statusParam : null;
+---
+
+<BaseLayout lang={lang} title={title} description={description} path="contact">
+  <ContactView lang={lang} status={status} />
+</BaseLayout>

@@ -1,0 +1,82 @@
+---
+import { getRelativeLocaleUrl } from 'astro:i18n';
+import { Image } from 'astro:assets';
+import iconCircle from '../assets/brand/icon-circle.png';
+import Icon from './Icon.astro';
+import { useTranslations } from '../i18n/utils';
+import { getCollection } from 'astro:content';
+import type { Lang } from '../i18n/ui';
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+
+const allServices = await getCollection('services', (entry) => entry.id.startsWith(`${lang}/`));
+const services = allServices.sort((a, b) => a.data.order - b.data.order);
+
+const year = new Date().getFullYear();
+---
+
+<footer class="bg-espresso text-cream">
+  <div class="container-page grid gap-10 py-14 sm:py-16 md:grid-cols-12 md:gap-8">
+    <div class="md:col-span-4">
+      <a href={getRelativeLocaleUrl(lang, '')} class="inline-flex items-center gap-3">
+        <Image src={iconCircle} alt="" width={48} height={48} loading="lazy" class="h-11 w-11 rounded-full" />
+        <span class="text-lg font-semibold text-white">{t.meta.siteName}</span>
+      </a>
+      <p class="mt-4 max-w-xs text-sm leading-relaxed text-cream/70">{t.footer.tagline}</p>
+      <p class="mt-6 text-sm text-cream/70">{t.common.servingAllUae}</p>
+    </div>
+
+    <div class="md:col-span-2 md:col-start-6">
+      <h2 class="text-sm font-semibold uppercase tracking-wide text-gold-on-dark">{t.footer.companyHeading}</h2>
+      <ul class="mt-4 space-y-2.5 text-sm text-cream/75">
+        <li><a class="transition-colors hover:text-white" href={getRelativeLocaleUrl(lang, '')}>{t.nav.home}</a></li>
+        <li><a class="transition-colors hover:text-white" href={getRelativeLocaleUrl(lang, 'about')}>{t.nav.about}</a></li>
+        <li><a class="transition-colors hover:text-white" href={getRelativeLocaleUrl(lang, 'contact')}>{t.nav.contact}</a></li>
+      </ul>
+    </div>
+
+    <div class="md:col-span-3">
+      <h2 class="text-sm font-semibold uppercase tracking-wide text-gold-on-dark">{t.footer.servicesHeading}</h2>
+      <ul class="mt-4 grid gap-2.5 text-sm text-cream/75">
+        {
+          services.map((service) => (
+            <li>
+              <a class="transition-colors hover:text-white" href={getRelativeLocaleUrl(lang, `services/${service.id.split('/')[1]}`)}>
+                {service.data.title}
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+
+    <div class="md:col-span-3">
+      <h2 class="text-sm font-semibold uppercase tracking-wide text-gold-on-dark">{t.footer.contactHeading}</h2>
+      <ul class="mt-4 space-y-3 text-sm text-cream/75">
+        <li class="flex items-start gap-2.5">
+          <Icon name="map-pin" class="mt-0.5 h-4 w-4 shrink-0 text-gold-on-dark" />
+          <span>{t.footer.addressLine}</span>
+        </li>
+        <li class="flex items-start gap-2.5">
+          <Icon name="phone" class="mt-0.5 h-4 w-4 shrink-0 text-gold-on-dark" />
+          <a class="transition-colors hover:text-white" href="tel:+971544381939" dir="ltr">0544 381 939</a>
+        </li>
+        <li class="flex items-start gap-2.5">
+          <Icon name="mail" class="mt-0.5 h-4 w-4 shrink-0 text-gold-on-dark" />
+          <a class="break-all transition-colors hover:text-white" href="mailto:howida.yo.ho@gmail.com">howida.yo.ho@gmail.com</a>
+        </li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="border-t border-white/10">
+    <div class="container-page flex flex-col items-center gap-2 py-6 text-xs text-cream/60 sm:flex-row sm:justify-between">
+      <p>&copy; {year} {t.meta.siteName}. {t.footer.rights}</p>
+    </div>
+  </div>
+</footer>

@@ -1,0 +1,40 @@
+---
+import { getRelativeLocaleUrl } from 'astro:i18n';
+import { getCollection } from 'astro:content';
+import { useTranslations } from '../../i18n/utils';
+import type { Lang } from '../../i18n/ui';
+import SectionHeading from '../SectionHeading.astro';
+import ServiceCard from '../ServiceCard.astro';
+import CtaBand from '../CtaBand.astro';
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+
+const allServices = await getCollection('services', (entry) => entry.id.startsWith(`${lang}/`));
+const services = allServices.sort((a, b) => a.data.order - b.data.order);
+---
+
+<section class="border-b border-gold/10">
+  <div class="container-page py-16 sm:py-20">
+    <SectionHeading kicker={t.services.kicker} title={t.services.title} subtitle={t.services.subtitle} align="center" as="h1" />
+    <div class="mt-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+      {
+        services.map((service) => (
+          <ServiceCard
+            href={getRelativeLocaleUrl(lang, `services/${service.id.split('/')[1]}`)}
+            icon={service.data.icon}
+            title={service.data.title}
+            summary={service.data.summary}
+            arrowLabel={t.common.learnMore}
+          />
+        ))
+      }
+    </div>
+  </div>
+</section>
+
+<CtaBand title={t.home.ctaTitle} subtitle={t.home.ctaSubtitle} buttonLabel={t.home.ctaButton} buttonHref={getRelativeLocaleUrl(lang, 'contact')} />

@@ -1,0 +1,100 @@
+---
+import { getRelativeLocaleUrl } from 'astro:i18n';
+import { getCollection, render, type CollectionEntry } from 'astro:content';
+import { useTranslations } from '../../i18n/utils';
+import type { Lang } from '../../i18n/ui';
+import Icon from '../Icon.astro';
+import ServiceCard from '../ServiceCard.astro';
+import CtaBand from '../CtaBand.astro';
+
+interface Props {
+  lang: Lang;
+  service: CollectionEntry<'services'>;
+}
+
+const { lang, service } = Astro.props;
+const t = useTranslations(lang);
+const { Content } = await render(service);
+const slug = service.id.split('/')[1];
+
+const allServices = await getCollection('services', (entry) => entry.id.startsWith(`${lang}/`));
+const otherServices = allServices.filter((entry) => entry.id.split('/')[1] !== slug).sort((a, b) => a.data.order - b.data.order).slice(0, 3);
+---
+
+<section class="border-b border-gold/10">
+  <div class="container-page py-10 sm:py-12">
+    <nav aria-label={lang === 'ar' ? 'مسار التصفح' : 'Breadcrumb'} class="flex flex-wrap items-center gap-2 text-sm text-body">
+      <a href={getRelativeLocaleUrl(lang, '')} class="transition-colors hover:text-ink">{t.nav.home}</a>
+      <Icon name="chevron-right" class="h-3.5 w-3.5 rtl:rotate-180" />
+      <a href={getRelativeLocaleUrl(lang, 'services')} class="transition-colors hover:text-ink">{t.nav.services}</a>
+      <Icon name="chevron-right" class="h-3.5 w-3.5 rtl:rotate-180" />
+      <span class="text-ink" aria-current="page">{service.data.title}</span>
+    </nav>
+
+    <div class="mt-6 flex flex-col gap-6 sm:flex-row sm:items-start sm:gap-8">
+      <span class="flex h-16 w-16 shrink-0 items-center justify-center rounded-2xl bg-gold-light/60 text-gold-deep">
+        <Icon name={service.data.icon} class="h-8 w-8" />
+      </span>
+      <div>
+        <h1 class="text-balance text-3xl font-bold leading-tight text-ink sm:text-4xl">{service.data.title}</h1>
+        <p class="mt-3 max-w-2xl text-balance text-lg leading-relaxed text-body">{service.data.summary}</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="border-b border-gold/10 bg-cream-dark/50">
+  <div class="container-page grid gap-10 py-14 sm:py-16 lg:grid-cols-12 lg:gap-12">
+    <div class="prose-body max-w-2xl text-base lg:col-span-8 [&>p]:mb-5 [&>p:last-child]:mb-0">
+      <Content />
+    </div>
+    <aside class="lg:col-span-4">
+      <div class="rounded-2xl border border-gold/15 bg-white/70 p-6">
+        <h2 class="text-sm font-semibold uppercase tracking-wider text-gold-deep">{t.services.featuresTitle}</h2>
+        <ul class="mt-4 space-y-3">
+          {
+            service.data.features.map((feature) => (
+              <li class="flex items-start gap-2.5 text-sm text-ink">
+                <Icon name="check" class="mt-0.5 h-4 w-4 shrink-0 text-gold-dark" />
+                <span>{feature}</span>
+              </li>
+            ))
+          }
+        </ul>
+        <a
+          href={getRelativeLocaleUrl(lang, 'contact')}
+          class="mt-6 flex w-full items-center justify-center gap-2 rounded-full bg-gold-dark px-5 py-3 text-sm font-semibold text-white transition-colors hover:bg-espresso-2"
+        >
+          {t.services.ctaButton}
+        </a>
+      </div>
+    </aside>
+  </div>
+</section>
+
+{
+  otherServices.length > 0 && (
+    <section class="border-b border-gold/10">
+      <div class="container-page py-14 sm:py-16">
+        <h2 class="text-2xl font-bold text-ink">{t.services.otherServices}</h2>
+        <div class="mt-8 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+          {otherServices.map((other) => (
+            <ServiceCard
+              href={getRelativeLocaleUrl(lang, `services/${other.id.split('/')[1]}`)}
+              icon={other.data.icon}
+              title={other.data.title}
+              summary={other.data.summary}
+              arrowLabel={t.common.learnMore}
+            />
+          ))}
+        </div>
+        <a href={getRelativeLocaleUrl(lang, 'services')} class="mt-8 inline-flex items-center gap-1.5 text-sm font-semibold text-gold-deep">
+          {t.common.viewAllServices}
+          <Icon name="arrow-right" class="h-4 w-4 rtl:rotate-180" />
+        </a>
+      </div>
+    </section>
+  )
+}
+
+<CtaBand title={t.services.ctaTitle} subtitle={t.services.ctaBody} buttonLabel={t.services.ctaButton} buttonHref={getRelativeLocaleUrl(lang, 'contact')} />

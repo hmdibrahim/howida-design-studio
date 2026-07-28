@@ -1,0 +1,90 @@
+---
+import { getCollection } from 'astro:content';
+import { useTranslations } from '../../i18n/utils';
+import type { Lang } from '../../i18n/ui';
+import Icon from '../Icon.astro';
+import ContactForm from '../ContactForm.astro';
+
+interface Props {
+  lang: Lang;
+  status?: 'success' | 'error' | null;
+}
+
+const { lang, status = null } = Astro.props;
+const t = useTranslations(lang);
+
+const allServices = await getCollection('services', (entry) => entry.id.startsWith(`${lang}/`));
+const services = allServices
+  .sort((a, b) => a.data.order - b.data.order)
+  .map((entry) => ({ slug: entry.id.split('/')[1], title: entry.data.title }));
+
+const mapsQuery = encodeURIComponent('Abu Dhabi, United Arab Emirates');
+---
+
+<section>
+  <div class="container-page py-16 sm:py-20">
+    <div class="max-w-2xl">
+      <p class="mb-4 text-sm font-semibold uppercase tracking-wider text-gold-deep">{t.contact.kicker}</p>
+      <h1 class="text-balance text-4xl font-bold leading-tight text-ink sm:text-5xl">{t.contact.title}</h1>
+      <p class="mt-5 text-balance text-lg leading-relaxed text-body">{t.contact.subtitle}</p>
+    </div>
+
+    <div class="mt-12 grid gap-8 lg:grid-cols-12 lg:gap-10">
+      <div class="lg:col-span-7">
+        <ContactForm lang={lang} services={services} status={status} />
+      </div>
+
+      <aside class="lg:col-span-5">
+        <div class="rounded-2xl border border-gold/15 bg-cream-dark/60 p-6 sm:p-8">
+          <h2 class="text-sm font-semibold uppercase tracking-wider text-gold-deep">{t.contact.infoTitle}</h2>
+          <ul class="mt-5 space-y-5">
+            <li class="flex items-start gap-3">
+              <span class="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-gold-light/60 text-gold-deep">
+                <Icon name="phone" class="h-[1.125rem] w-[1.125rem]" />
+              </span>
+              <div>
+                <p class="text-sm font-medium text-body">{t.contact.phoneLabelInfo}</p>
+                <a href="tel:+971544381939" dir="ltr" class="font-semibold text-ink hover:text-gold-deep">0544 381 939</a>
+              </div>
+            </li>
+            <li class="flex items-start gap-3">
+              <span class="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-gold-light/60 text-gold-deep">
+                <Icon name="mail" class="h-[1.125rem] w-[1.125rem]" />
+              </span>
+              <div>
+                <p class="text-sm font-medium text-body">{t.contact.emailLabelInfo}</p>
+                <a href="mailto:howida.yo.ho@gmail.com" class="break-all font-semibold text-ink hover:text-gold-deep">howida.yo.ho@gmail.com</a>
+              </div>
+            </li>
+            <li class="flex items-start gap-3">
+              <span class="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-gold-light/60 text-gold-deep">
+                <Icon name="map-pin" class="h-[1.125rem] w-[1.125rem]" />
+              </span>
+              <div>
+                <p class="text-sm font-medium text-body">{t.contact.locationLabelInfo}</p>
+                <a
+                  href={`https://www.google.com/maps/search/?api=1&query=${mapsQuery}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="font-semibold text-ink hover:text-gold-deep"
+                >
+                  {t.footer.addressLine}
+                </a>
+              </div>
+            </li>
+            <li class="flex items-start gap-3">
+              <span class="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-gold-light/60 text-gold-deep">
+                <Icon name="clock" class="h-[1.125rem] w-[1.125rem]" />
+              </span>
+              <div>
+                <p class="text-sm font-medium text-body">{t.contact.hoursLabel}</p>
+                <p class="font-semibold text-ink">{t.contact.hoursValue}</p>
+              </div>
+            </li>
+          </ul>
+          <p class="mt-6 text-sm leading-relaxed text-body">{t.common.servingAllUae}</p>
+        </div>
+      </aside>
+    </div>
+  </div>
+</section>

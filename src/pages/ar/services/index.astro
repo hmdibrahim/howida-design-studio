@@ -1,0 +1,15 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import ServicesIndexView from '../../../components/views/ServicesIndexView.astro';
+import { useTranslations } from '../../../i18n/utils';
+
+const lang = 'ar';
+const t = useTranslations(lang);
+const title = `${t.services.title} | ${t.meta.siteName}`;
+const description =
+  'اكتشف خدمات التصميم الداخلي والتصميم ثلاثي الأبعاد وتخطيط المساحات والتنفيذ المتكامل والتشطيبات والإشراف على التنفيذ والتجديد واستشارات التصميم الهندسي من Howida design studio.';
+---
+
+<BaseLayout lang={lang} title={title} description={description} path="services">
+  <ServicesIndexView lang={lang} />
+</BaseLayout>

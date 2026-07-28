@@ -1,0 +1,38 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import ServiceDetailView from '../../../components/views/ServiceDetailView.astro';
+import { useTranslations } from '../../../i18n/utils';
+import { serviceSchema, breadcrumbSchema } from '../../../lib/schema';
+
+const lang = 'ar';
+const t = useTranslations(lang);
+
+export async function getStaticPaths() {
+  const services = await getCollection('services', (entry) => entry.id.startsWith('ar/'));
+  return services.map((service) => ({
+    params: { slug: service.id.split('/')[1] },
+    props: { service },
+  }));
+}
+
+const { service } = Astro.props;
+const slug = service.id.split('/')[1];
+const title = `${service.data.title} | ${t.meta.siteName}`;
+
+const jsonLd = [
+  serviceSchema(lang, { title: service.data.title, summary: service.data.summary, slug }),
+  breadcrumbSchema(
+    [
+      { name: t.nav.home, path: '' },
+      { name: t.nav.services, path: 'services' },
+      { name: service.data.title, path: `services/${slug}` },
+    ],
+    lang,
+  ),
+];
+---
+
+<BaseLayout lang={lang} title={title} description={service.data.summary} path={`services/${slug}`} jsonLd={jsonLd}>
+  <ServiceDetailView lang={lang} service={service} />
+</BaseLayout>

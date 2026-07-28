@@ -1,0 +1,160 @@
+---
+import { getRelativeLocaleUrl } from 'astro:i18n';
+import { getCollection } from 'astro:content';
+import { Image } from 'astro:assets';
+import iconOnCream from '../../assets/brand/icon-on-cream.png';
+import { useTranslations } from '../../i18n/utils';
+import type { Lang } from '../../i18n/ui';
+import SectionHeading from '../SectionHeading.astro';
+import ServiceCard from '../ServiceCard.astro';
+import CtaBand from '../CtaBand.astro';
+import Button from '../Button.astro';
+import Icon, { type IconName } from '../Icon.astro';
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+
+const allServices = await getCollection('services', (entry) => entry.id.startsWith(`${lang}/`));
+const services = allServices.sort((a, b) => a.data.order - b.data.order);
+
+const whyIcons: IconName[] = ['users', 'layers', 'message-circle', 'map'];
+const processIcons: IconName[] = ['consult', 'design', 'execute', 'handover'];
+---
+
+<section class="relative overflow-hidden border-b border-gold/10">
+  <div class="container-page grid items-center gap-12 py-16 sm:py-20 lg:grid-cols-2 lg:gap-10 lg:py-28">
+    <div class="max-w-xl animate-fade-up">
+      <p class="mb-4 text-sm font-semibold uppercase tracking-wider text-gold-deep">{t.home.heroKicker}</p>
+      <h1 class="text-balance text-4xl font-bold leading-[1.1] text-ink sm:text-5xl lg:text-[3.25rem]">
+        {t.home.heroTitle}
+      </h1>
+      <p class="mt-6 text-balance text-lg leading-relaxed text-body">
+        {t.home.heroSubtitle}
+      </p>
+      <div class="mt-9 flex flex-wrap items-center gap-4">
+        <Button href={getRelativeLocaleUrl(lang, 'contact')} variant="primary" class="px-7 py-3.5 text-base">
+          {t.home.heroCtaPrimary}
+        </Button>
+        <Button href={getRelativeLocaleUrl(lang, 'services')} variant="secondary" class="px-7 py-3.5 text-base">
+          {t.home.heroCtaSecondary}
+        </Button>
+      </div>
+    </div>
+
+    <div class="relative hidden items-center justify-center lg:flex" aria-hidden="true">
+      <svg viewBox="0 0 480 480" class="absolute h-[26rem] w-[26rem] text-gold">
+        <circle cx="240" cy="240" r="200" fill="none" stroke="currentColor" stroke-width="1" opacity="0.18"></circle>
+        <circle cx="240" cy="240" r="150" fill="none" stroke="currentColor" stroke-width="1" opacity="0.25"></circle>
+        <circle cx="240" cy="240" r="100" fill="none" stroke="currentColor" stroke-width="1" opacity="0.3"></circle>
+      </svg>
+      <Image
+        src={iconOnCream}
+        alt=""
+        width={340}
+        height={378}
+        loading="eager"
+        fetchpriority="high"
+        class="relative h-[21rem] w-auto drop-shadow-[0_20px_35px_rgba(176,141,87,0.18)]"
+      />
+    </div>
+  </div>
+</section>
+
+<section class="border-b border-gold/10 bg-cream-dark/50">
+  <div class="container-page grid items-center gap-10 py-16 sm:py-20 lg:grid-cols-12 lg:gap-8">
+    <div class="lg:col-span-7">
+      <SectionHeading kicker={t.home.aboutKicker} title={t.home.aboutTitle} />
+      <p class="prose-body mt-5 max-w-2xl text-base">{t.home.aboutBody}</p>
+      <Button href={getRelativeLocaleUrl(lang, 'about')} variant="secondary" class="mt-7">
+        {t.home.aboutCta}
+        <Icon name="arrow-right" class="h-4 w-4 rtl:rotate-180" />
+      </Button>
+    </div>
+    <ul class="grid gap-4 sm:grid-cols-2 lg:col-span-5">
+      {
+        t.about.values.map((value) => (
+          <li class="rounded-xl border border-gold/15 bg-white/70 p-5">
+            <p class="font-semibold text-ink">{value.title}</p>
+            <p class="mt-1.5 text-sm leading-relaxed text-body">{value.body}</p>
+          </li>
+        ))
+      }
+    </ul>
+  </div>
+</section>
+
+<section id="services" class="border-b border-gold/10">
+  <div class="container-page py-16 sm:py-20">
+    <SectionHeading kicker={t.home.servicesKicker} title={t.home.servicesTitle} subtitle={t.home.servicesSubtitle} align="center" />
+    <div class="mt-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+      {
+        services.map((service) => (
+          <ServiceCard
+            href={getRelativeLocaleUrl(lang, `services/${service.id.split('/')[1]}`)}
+            icon={service.data.icon}
+            title={service.data.title}
+            summary={service.data.summary}
+            arrowLabel={t.common.learnMore}
+          />
+        ))
+      }
+    </div>
+  </div>
+</section>
+
+<section class="border-b border-gold/10 bg-cream-dark/50">
+  <div class="container-page py-16 sm:py-20">
+    <SectionHeading kicker={t.home.whyKicker} title={t.home.whyTitle} align="center" />
+    <div class="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+      {
+        t.home.whyItems.map((item, index) => (
+          <div class="rounded-2xl bg-white/70 p-6 text-center">
+            <span class="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-gold-light/60 text-gold-deep">
+              <Icon name={whyIcons[index]} class="h-6 w-6" />
+            </span>
+            <p class="mt-4 font-semibold text-ink">{item.title}</p>
+            <p class="mt-2 text-sm leading-relaxed text-body">{item.body}</p>
+          </div>
+        ))
+      }
+    </div>
+  </div>
+</section>
+
+<section class="border-b border-gold/10">
+  <div class="container-page py-16 sm:py-20">
+    <SectionHeading kicker={t.home.processKicker} title={t.home.processTitle} align="center" />
+    <ol class="mt-12 grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
+      {
+        t.home.processSteps.map((step, index) => (
+          <li class="relative rounded-2xl border border-gold/15 p-6">
+            <span class="text-xs font-semibold uppercase tracking-wider text-gold-deep">
+              {String(index + 1).padStart(2, '0')}
+            </span>
+            <span class="mt-3 flex h-11 w-11 items-center justify-center rounded-xl bg-gold-light/60 text-gold-deep">
+              <Icon name={processIcons[index]} class="h-5 w-5" />
+            </span>
+            <p class="mt-4 font-semibold text-ink">{step.title}</p>
+            <p class="mt-2 text-sm leading-relaxed text-body">{step.body}</p>
+          </li>
+        ))
+      }
+    </ol>
+  </div>
+</section>
+
+<section class="border-b border-gold/10 bg-cream-dark/50">
+  <div class="container-page flex flex-col items-center gap-4 py-12 text-center sm:py-14">
+    <span class="flex h-12 w-12 items-center justify-center rounded-full bg-gold-light/60 text-gold-deep">
+      <Icon name="map-pin" class="h-6 w-6" />
+    </span>
+    <h2 class="text-2xl font-bold text-ink">{t.home.coverageTitle}</h2>
+    <p class="max-w-xl text-balance text-body">{t.home.coverageBody}</p>
+  </div>
+</section>
+
+<CtaBand title={t.home.ctaTitle} subtitle={t.home.ctaSubtitle} buttonLabel={t.home.ctaButton} buttonHref={getRelativeLocaleUrl(lang, 'contact')} />

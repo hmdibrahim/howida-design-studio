@@ -1,0 +1,18 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Button from '../../components/Button.astro';
+import { useTranslations } from '../../i18n/utils';
+import { getRelativeLocaleUrl } from 'astro:i18n';
+
+const lang = 'ar';
+const t = useTranslations(lang);
+---
+
+<BaseLayout lang={lang} title={`${t.notFound.title} | ${t.meta.siteName}`} description={t.notFound.body} path="404" noindex>
+  <section class="container-page flex flex-col items-center gap-6 py-24 text-center sm:py-32">
+    <p class="text-sm font-semibold uppercase tracking-wider text-gold-deep">404</p>
+    <h1 class="text-4xl font-bold text-ink">{t.notFound.title}</h1>
+    <p class="max-w-md text-body">{t.notFound.body}</p>
+    <Button href={getRelativeLocaleUrl(lang, '')}>{t.notFound.cta}</Button>
+  </section>
+</BaseLayout>

@@ -1,0 +1,15 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import AboutView from '../components/views/AboutView.astro';
+import { useTranslations } from '../i18n/utils';
+
+const lang = 'en';
+const t = useTranslations(lang);
+const title = `${t.about.title} | ${t.meta.siteName}`;
+const description =
+  "Learn about Howida design studio, an Abu Dhabi-based interior design studio delivering personalised, detail-led interior design and execution across the UAE.";
+---
+
+<BaseLayout lang={lang} title={title} description={description} path="about">
+  <AboutView lang={lang} />
+</BaseLayout>
