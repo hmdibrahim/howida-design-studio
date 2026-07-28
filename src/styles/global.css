@@ -3,7 +3,7 @@
 
 @theme {
   /* Brand palette — contrast-checked against WCAG 2.2 AA (see README) */
-  --color-cream: #f7f3ec;
+  --color-cream: #faf8f3;
   --color-cream-dark: #efe6d8;
   --color-ink: #3f332a;
   --color-body: #5a4c40;
@@ -16,7 +16,15 @@
   --color-espresso-2: #4a3524;
   --color-gold-on-dark: #c9a876;
 
+  /* Neutral tones for photo-placeholder blocks — deliberately not gold-tinted */
+  --color-surface: #f1ece2;
+  --color-surface-deep: #ddd2bd;
+  /* Structural hairline border for cards/panels (replaces border-gold/15 in most spots) */
+  --color-hairline: #e4dccc;
+
   --font-sans: 'Cairo Variable', 'Cairo', ui-sans-serif, system-ui, sans-serif;
+  /* Websafe serif for English display headings, echoing the brand wordmark */
+  --font-serif: Georgia, 'Times New Roman', ui-serif, serif;
 
   --breakpoint-xs: 22.5rem;
 
@@ -58,6 +66,19 @@
     border-radius: 2px;
   }
 
+  /* Heading font swaps per language: serif for English (echoes the brand wordmark),
+     Cairo for Arabic. :lang(ar) must stay declared after :root — same specificity,
+     source order decides which wins on <html lang="ar">. */
+  :root {
+    --font-heading: var(--font-serif);
+    --heading-weight: 500;
+  }
+
+  :lang(ar) {
+    --font-heading: var(--font-sans);
+    --heading-weight: 600;
+  }
+
   @media (prefers-reduced-motion: reduce) {
     html {
       scroll-behavior: auto;
@@ -92,4 +113,9 @@
 @utility prose-body {
   color: var(--color-body);
   line-height: 1.75;
+}
+
+@utility font-heading {
+  font-family: var(--font-heading);
+  font-weight: var(--heading-weight);
 }

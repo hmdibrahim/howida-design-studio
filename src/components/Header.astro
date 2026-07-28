@@ -9,9 +9,10 @@ import type { Lang } from '../i18n/ui';
 interface Props {
   lang: Lang;
   path?: string;
+  transparent?: boolean;
 }
 
-const { lang, path = '' } = Astro.props;
+const { lang, path = '', transparent = false } = Astro.props;
 const t = useTranslations(lang);
 const other = otherLang(lang);
 
@@ -30,7 +31,13 @@ function isActive(match: string) {
 const langSwitchHref = getRelativeLocaleUrl(other, path);
 ---
 
-<header class="sticky top-0 z-50 border-b border-gold/15 bg-cream/95 backdrop-blur supports-[backdrop-filter]:bg-cream/85">
+<header
+  class:list={[
+    'sticky top-0 z-50 transition-colors duration-300',
+    transparent ? 'border-b border-transparent bg-transparent' : 'border-b border-hairline bg-cream/95 backdrop-blur supports-[backdrop-filter]:bg-cream/85',
+  ]}
+  data-transparent={transparent ? 'true' : undefined}
+>
   <div class="container-page flex h-[4.5rem] items-center justify-between gap-4 py-3">
     <a href={getRelativeLocaleUrl(lang, '')} class="flex shrink-0 items-center gap-2.5 sm:gap-3">
       <Image src={iconOnCream} alt="" width={44} height={44} loading="eager" fetchpriority="high" class="h-10 w-10 sm:h-11 sm:w-11" />
@@ -46,8 +53,8 @@ const langSwitchHref = getRelativeLocaleUrl(other, path);
             href={item.href}
             aria-current={isActive(item.match) ? 'page' : undefined}
             class:list={[
-              'relative py-2 text-[0.95rem] font-medium text-body transition-colors hover:text-ink',
-              { 'text-ink after:absolute after:-bottom-0.5 after:start-0 after:h-0.5 after:w-full after:bg-gold-dark': isActive(item.match) },
+              'relative py-2 text-xs font-semibold uppercase tracking-[0.14em] text-body transition-colors hover:text-ink',
+              { 'text-ink after:absolute after:-bottom-0.5 after:start-0 after:h-px after:w-full after:bg-gold': isActive(item.match) },
             ]}
           >
             {t.nav[item.key]}
@@ -56,17 +63,17 @@ const langSwitchHref = getRelativeLocaleUrl(other, path);
       }
     </nav>
 
-    <div class="hidden items-center gap-3 lg:flex">
+    <div class="hidden items-center gap-6 lg:flex">
       <a
         href={langSwitchHref}
-        class="rounded-full border border-gold/40 px-4 py-2 text-sm font-medium text-gold-deep transition-colors hover:border-gold-dark hover:bg-gold-light/40"
+        class="text-xs font-semibold uppercase tracking-[0.14em] text-gold-deep transition-colors hover:text-gold-dark"
         hreflang={other}
       >
         {t.nav.switchLang}
       </a>
       <a
         href={getRelativeLocaleUrl(lang, 'contact')}
-        class="rounded-full bg-gold-dark px-5 py-2.5 text-sm font-semibold text-white shadow-sm transition-colors hover:bg-espresso-2"
+        class="rounded-sm bg-gold-dark px-5 py-2.5 text-sm font-semibold text-white shadow-sm transition-colors hover:bg-espresso-2"
       >
         {t.nav.bookConsultation}
       </a>
@@ -75,7 +82,7 @@ const langSwitchHref = getRelativeLocaleUrl(other, path);
     <button
       type="button"
       id="menu-toggle"
-      class="flex h-11 w-11 items-center justify-center rounded-lg text-ink lg:hidden"
+      class="flex h-11 w-11 items-center justify-center rounded-sm text-ink lg:hidden"
       aria-expanded="false"
       aria-controls="mobile-nav"
     >
@@ -85,7 +92,7 @@ const langSwitchHref = getRelativeLocaleUrl(other, path);
     </button>
   </div>
 
-  <div id="mobile-nav" class="hidden border-t border-gold/15 bg-cream lg:hidden" role="dialog" aria-modal="true" aria-label={lang === 'ar' ? 'قائمة التنقل' : 'Navigation menu'}>
+  <div id="mobile-nav" class="hidden border-t border-hairline bg-cream lg:hidden" role="dialog" aria-modal="true" aria-label={lang === 'ar' ? 'قائمة التنقل' : 'Navigation menu'}>
     <nav aria-label={lang === 'ar' ? 'التنقل للجوال' : 'Mobile'} class="container-page flex flex-col gap-1 py-4">
       {
         navItems.map((item) => (
@@ -93,7 +100,7 @@ const langSwitchHref = getRelativeLocaleUrl(other, path);
             href={item.href}
             aria-current={isActive(item.match) ? 'page' : undefined}
             class:list={[
-              'rounded-lg px-3 py-3 text-base font-medium text-body transition-colors hover:bg-gold-light/40 hover:text-ink',
+              'rounded-sm px-3 py-3 text-sm font-semibold uppercase tracking-wide text-body transition-colors hover:bg-gold-light/40 hover:text-ink',
               { 'bg-gold-light/50 text-ink': isActive(item.match) },
             ]}
           >
@@ -101,12 +108,12 @@ const langSwitchHref = getRelativeLocaleUrl(other, path);
           </a>
         ))
       }
-      <a href={langSwitchHref} hreflang={other} class="rounded-lg px-3 py-3 text-base font-medium text-gold-deep hover:bg-gold-light/40">
+      <a href={langSwitchHref} hreflang={other} class="rounded-sm px-3 py-3 text-sm font-semibold uppercase tracking-wide text-gold-deep hover:bg-gold-light/40">
         {t.nav.switchLang}
       </a>
       <a
         href={getRelativeLocaleUrl(lang, 'contact')}
-        class="mt-2 rounded-full bg-gold-dark px-5 py-3 text-center text-base font-semibold text-white transition-colors hover:bg-espresso-2"
+        class="mt-2 rounded-sm bg-gold-dark px-5 py-3 text-center text-base font-semibold text-white transition-colors hover:bg-espresso-2"
       >
         {t.nav.bookConsultation}
       </a>
@@ -138,4 +145,19 @@ const langSwitchHref = getRelativeLocaleUrl(other, path);
       });
     });
   }
+
+  const transparentHeader = document.querySelector('header[data-transparent="true"]');
+  if (transparentHeader) {
+    const onScroll = () => transparentHeader.classList.toggle('is-scrolled', window.scrollY > 40);
+    onScroll();
+    window.addEventListener('scroll', onScroll, { passive: true });
+  }
 </script>
+
+<style>
+  header[data-transparent='true'].is-scrolled {
+    background-color: color-mix(in srgb, var(--color-cream) 95%, transparent);
+    border-bottom-color: var(--color-hairline);
+    backdrop-filter: blur(8px);
+  }
+</style>

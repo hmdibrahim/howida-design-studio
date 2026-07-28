@@ -57,6 +57,13 @@ interface Dictionary {
     servicesKicker: string;
     servicesTitle: string;
     servicesSubtitle: string;
+    portfolio: {
+      kicker: string;
+      title: string;
+      subtitle: string;
+      items: { category: string }[];
+      cta: string;
+    };
     whyKicker: string;
     whyTitle: string;
     whyItems: { title: string; body: string }[];
@@ -189,6 +196,20 @@ export const ui: Record<Lang, Dictionary> = {
       servicesTitle: 'Our Services',
       servicesSubtitle:
         'From the first sketch to final handover, we offer eight specialised services that can be booked individually or combined into a single managed project.',
+      portfolio: {
+        kicker: 'Selected Work',
+        title: 'A Portfolio of Considered Interiors',
+        subtitle: 'A look at the range of spaces we design and deliver across the UAE.',
+        items: [
+          { category: 'Living Spaces' },
+          { category: 'Kitchens & Dining' },
+          { category: 'Bedrooms & Suites' },
+          { category: 'Commercial Interiors' },
+          { category: 'Villas & Exteriors' },
+          { category: 'Office Fit-Outs' },
+        ],
+        cta: 'View Our Services',
+      },
       whyKicker: 'Why Howida design studio',
       whyTitle: 'A considered approach, from concept to handover',
       whyItems: [
@@ -364,6 +385,20 @@ export const ui: Record<Lang, Dictionary> = {
       servicesTitle: 'خدماتنا',
       servicesSubtitle:
         'من أول رسم تخطيطي وحتى التسليم النهائي، نقدم ثماني خدمات متخصصة يمكن حجزها منفردة أو ضمن مشروع متكامل مُدار بالكامل.',
+      portfolio: {
+        kicker: 'أعمال مختارة',
+        title: 'مجموعة مختارة من التصاميم الداخلية',
+        subtitle: 'نظرة على تنوّع المساحات التي نصممها وننفذها في جميع أنحاء الإمارات.',
+        items: [
+          { category: 'مساحات المعيشة' },
+          { category: 'المطابخ وأماكن الطعام' },
+          { category: 'غرف النوم والأجنحة' },
+          { category: 'المساحات التجارية' },
+          { category: 'الفلل والواجهات الخارجية' },
+          { category: 'تجهيز المكاتب' },
+        ],
+        cta: 'تصفّح خدماتنا',
+      },
       whyKicker: 'لماذا Howida design studio',
       whyTitle: 'أسلوب عمل مدروس، من الفكرة وحتى التسليم',
       whyItems: [

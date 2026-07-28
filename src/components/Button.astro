@@ -15,6 +15,6 @@ const variants: Record<string, string> = {
 };
 ---
 
-<a href={href} class:list={['inline-flex items-center justify-center gap-2 rounded-full px-6 py-3 text-sm font-semibold transition-colors', variants[variant], className]}>
+<a href={href} class:list={['inline-flex items-center justify-center gap-2 rounded-sm px-6 py-3 text-sm font-semibold transition-colors', variants[variant], className]}>
   <slot />
 </a>

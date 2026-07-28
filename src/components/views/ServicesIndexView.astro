@@ -18,7 +18,7 @@ const allServices = await getCollection('services', (entry) => entry.id.startsWi
 const services = allServices.sort((a, b) => a.data.order - b.data.order);
 ---
 
-<section class="border-b border-gold/10">
+<section class="border-b border-hairline">
   <div class="container-page py-16 sm:py-20">
     <SectionHeading kicker={t.services.kicker} title={t.services.title} subtitle={t.services.subtitle} align="center" as="h1" />
     <div class="mt-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">

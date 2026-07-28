@@ -8,6 +8,6 @@ const lang = 'en';
 const t = useTranslations(lang);
 ---
 
-<BaseLayout lang={lang} title={t.meta.defaultTitle} description={t.meta.defaultDescription} path="" jsonLd={organizationSchema(lang)}>
+<BaseLayout lang={lang} title={t.meta.defaultTitle} description={t.meta.defaultDescription} path="" jsonLd={organizationSchema(lang)} transparentHeader>
   <HomeView lang={lang} />
 </BaseLayout>
