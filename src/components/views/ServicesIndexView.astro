@@ -23,13 +23,14 @@ const services = allServices.sort((a, b) => a.data.order - b.data.order);
     <SectionHeading kicker={t.services.kicker} title={t.services.title} subtitle={t.services.subtitle} align="center" as="h1" />
     <div class="mt-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
       {
-        services.map((service) => (
+        services.map((service, index) => (
           <ServiceCard
             href={getRelativeLocaleUrl(lang, `services/${service.id.split('/')[1]}`)}
             icon={service.data.icon}
             title={service.data.title}
             summary={service.data.summary}
             arrowLabel={t.common.learnMore}
+            index={index}
           />
         ))
       }

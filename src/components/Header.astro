@@ -54,7 +54,8 @@ const langSwitchHref = getRelativeLocaleUrl(other, path);
             aria-current={isActive(item.match) ? 'page' : undefined}
             class:list={[
               'relative py-2 text-xs font-semibold uppercase tracking-[0.14em] text-body transition-colors hover:text-ink',
-              { 'text-ink after:absolute after:-bottom-0.5 after:start-0 after:h-px after:w-full after:bg-gold': isActive(item.match) },
+              'after:absolute after:-bottom-0.5 after:start-0 after:h-px after:w-full after:origin-center after:scale-x-0 after:bg-gold after:transition-transform after:duration-300 after:ease-out hover:after:scale-x-100',
+              { 'text-ink after:scale-x-100 after:bg-gold-dark': isActive(item.match) },
             ]}
           >
             {t.nav[item.key]}

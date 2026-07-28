@@ -7,13 +7,16 @@ interface Props {
   title: string;
   summary: string;
   arrowLabel: string;
+  index?: number;
 }
 
-const { href, icon, title, summary, arrowLabel } = Astro.props;
+const { href, icon, title, summary, arrowLabel, index = 0 } = Astro.props;
 ---
 
 <a
   href={href}
+  data-reveal
+  style={`--reveal-delay: ${(index % 8) * 90}ms`}
   class="group flex flex-col rounded-sm border border-hairline bg-white p-6 transition-all duration-200 hover:-translate-y-0.5 hover:border-gold/40 hover:shadow-md hover:shadow-ink/5 sm:p-7"
 >
   <span class="flex h-12 w-12 shrink-0 items-center justify-center border border-hairline text-gold-deep">

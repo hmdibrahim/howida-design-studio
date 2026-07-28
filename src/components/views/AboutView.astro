@@ -29,14 +29,14 @@ const processIcons: IconName[] = ['consult', 'design', 'execute', 'handover'];
 
 <section class="border-b border-hairline">
   <div class="container-page grid items-center gap-12 py-16 sm:py-20 lg:grid-cols-12 lg:gap-10">
-    <div class="lg:col-span-7">
+    <div class="lg:col-span-7" data-reveal>
       <p class="mb-4 text-sm font-semibold uppercase tracking-wider text-gold-deep">{t.about.kicker}</p>
       <h1 class="font-heading text-balance text-4xl leading-tight text-ink sm:text-5xl">{t.about.title}</h1>
       <p class="mt-6 text-balance text-xl leading-relaxed text-ink">{t.about.introLead}</p>
       <p class="prose-body mt-5 max-w-2xl text-base">{t.about.introBody}</p>
     </div>
-    <div class="lg:col-span-5">
-      <PlaceholderImage ratio="tall" label="About studio photo placeholder" class="mx-auto max-w-sm" />
+    <div class="lg:col-span-5" data-reveal style="--reveal-delay: 120ms">
+      <PlaceholderImage ratio="tall" label="About studio photo placeholder" kenburns class="mx-auto max-w-sm" />
     </div>
   </div>
 </section>
@@ -46,8 +46,12 @@ const processIcons: IconName[] = ['consult', 'design', 'execute', 'handover'];
     <SectionHeading kicker={t.about.valuesKicker} title={t.about.valuesTitle} align="center" />
     <div class="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
       {
-        t.about.values.map((value) => (
-          <div class="rounded-sm border border-hairline bg-white p-6">
+        t.about.values.map((value, index) => (
+          <div
+            class:list={['rounded-sm border border-hairline bg-white p-6', { 'lg:mt-8': index % 2 === 1 }]}
+            data-reveal
+            style={`--reveal-delay: ${index * 90}ms`}
+          >
             <p class="font-semibold text-ink">{value.title}</p>
             <p class="mt-2 text-sm leading-relaxed text-body">{value.body}</p>
           </div>
@@ -63,7 +67,11 @@ const processIcons: IconName[] = ['consult', 'design', 'execute', 'handover'];
     <ol class="mt-12 grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
       {
         t.home.processSteps.map((step, index) => (
-          <li class="relative rounded-sm border border-hairline p-6">
+          <li
+            class:list={['relative rounded-sm border border-hairline p-6', { 'lg:mt-8': index % 2 === 1 }]}
+            data-reveal
+            style={`--reveal-delay: ${index * 90}ms`}
+          >
             <span class="text-xs font-semibold uppercase tracking-wider text-gold-deep">
               {String(index + 1).padStart(2, '0')}
             </span>
@@ -80,7 +88,7 @@ const processIcons: IconName[] = ['consult', 'design', 'execute', 'handover'];
 </section>
 
 <section class="border-b border-hairline bg-cream-dark/50">
-  <div class="container-page flex flex-col items-center gap-4 py-12 text-center sm:py-14">
+  <div class="container-page flex flex-col items-center gap-4 py-12 text-center sm:py-14" data-reveal>
     <Icon name="map-pin" class="h-7 w-7 text-gold-deep" />
     <h2 class="font-heading text-2xl text-ink">{t.about.coverageTitle}</h2>
     <p class="max-w-xl text-balance text-body">{t.about.coverageBody}</p>

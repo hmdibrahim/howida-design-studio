@@ -29,6 +29,8 @@
   --breakpoint-xs: 22.5rem;
 
   --animate-fade-up: fade-up 0.6s ease-out both;
+  --animate-kenburns: kenburns 20s ease-in-out infinite alternate both;
+  --animate-rule-grow: rule-grow 0.8s cubic-bezier(0.16, 1, 0.3, 1) both;
 
   @keyframes fade-up {
     from {
@@ -38,6 +40,24 @@
     to {
       opacity: 1;
       transform: translateY(0);
+    }
+  }
+
+  @keyframes kenburns {
+    from {
+      transform: scale(1);
+    }
+    to {
+      transform: scale(1.08);
+    }
+  }
+
+  @keyframes rule-grow {
+    from {
+      transform: scaleX(0);
+    }
+    to {
+      transform: scaleX(1);
     }
   }
 }
@@ -79,6 +99,24 @@
     --heading-weight: 600;
   }
 
+  /* Scroll-reveal: progressive enhancement. Elements only hide once `.js-reveal` is present
+     on <html> (set synchronously by an inline script in BaseLayout before paint), so content
+     stays fully visible with JS disabled. The observer script in BaseLayout adds `is-visible`
+     as each [data-reveal] element enters the viewport. */
+  .js-reveal [data-reveal] {
+    opacity: 0;
+    transform: translateY(1.5rem);
+    transition:
+      opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1),
+      transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+    transition-delay: var(--reveal-delay, 0ms);
+  }
+
+  .js-reveal [data-reveal].is-visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
   @media (prefers-reduced-motion: reduce) {
     html {
       scroll-behavior: auto;
@@ -91,6 +129,11 @@
       animation-iteration-count: 1 !important;
       transition-duration: 0.01ms !important;
       scroll-behavior: auto !important;
+    }
+
+    .js-reveal [data-reveal] {
+      opacity: 1 !important;
+      transform: none !important;
     }
   }
 }

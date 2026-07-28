@@ -36,6 +36,9 @@ const fontPreloadHref = lang === 'ar' ? cairoArabicWoff2 : cairoLatinWoff2;
     <link rel="preload" as="font" type="font/woff2" href={fontPreloadHref} crossorigin="anonymous" />
     <meta name="generator" content={Astro.generator} />
     <Seo lang={lang} title={title} description={description} path={path} ogImage={ogImage} noindex={noindex} jsonLd={jsonLd} />
+    <script is:inline>
+      document.documentElement.classList.add('js-reveal');
+    </script>
   </head>
   <body class="flex min-h-screen flex-col bg-cream text-ink">
     <a href="#main-content" class="skip-link">
@@ -48,6 +51,22 @@ const fontPreloadHref = lang === 'ar' ? cairoArabicWoff2 : cairoLatinWoff2;
     <Footer lang={lang} />
   </body>
 </html>
+
+<script>
+  const observer = new IntersectionObserver(
+    (entries) => {
+      for (const entry of entries) {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('is-visible');
+          observer.unobserve(entry.target);
+        }
+      }
+    },
+    { threshold: 0.15, rootMargin: '0px 0px -10% 0px' },
+  );
+
+  document.querySelectorAll('[data-reveal]').forEach((el) => observer.observe(el));
+</script>
 
 <style>
   .skip-link {
