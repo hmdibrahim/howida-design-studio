@@ -1,6 +1,7 @@
 ---
 import { getRelativeLocaleUrl } from 'astro:i18n';
 import { getCollection } from 'astro:content';
+import { Image } from 'astro:assets';
 import { useTranslations } from '../../i18n/utils';
 import type { Lang } from '../../i18n/ui';
 import SectionHeading from '../SectionHeading.astro';
@@ -28,6 +29,7 @@ const allServices = await getCollection('services', (entry) => entry.id.startsWi
 const services = allServices.sort((a, b) => a.data.order - b.data.order);
 
 const portfolioPhotos = [portfolioPhoto1, portfolioPhoto2, portfolioPhoto3, portfolioPhoto4, portfolioPhoto5, portfolioPhoto6];
+const heroSlides = [heroPhoto, portfolioPhoto4, portfolioPhoto2, portfolioPhoto5, portfolioPhoto3];
 
 const whyIcons: IconName[] = ['users', 'layers', 'message-circle', 'map'];
 const processIcons: IconName[] = ['consult', 'design', 'execute', 'handover'];
@@ -35,22 +37,43 @@ const processIcons: IconName[] = ['consult', 'design', 'execute', 'handover'];
 
 <section class="relative -mt-[4.5rem] h-[32rem] overflow-hidden sm:h-[40rem] lg:h-[46rem]">
   <div class="absolute inset-0 h-[120%]" data-parallax>
-    <ProjectPhoto src={heroPhoto} alt="" ratio="hero" kenburns widths={[640, 1024, 1600, 2000]} class="h-full w-full" />
+    {
+      heroSlides.map((slide, index) => (
+        <Image
+          src={slide}
+          alt=""
+          loading={index === 0 ? 'eager' : 'lazy'}
+          fetchpriority={index === 0 ? 'high' : undefined}
+          widths={[640, 1024, 1600, 2000]}
+          sizes="100vw"
+          data-hero-slide
+          class:list={[
+            'absolute inset-0 h-full w-full object-cover transition-opacity duration-[1800ms] ease-in-out',
+            index === 0 ? 'opacity-100' : 'opacity-0',
+            { 'animate-kenburns': index === 0 },
+          ]}
+        />
+      ))
+    }
+    {/* Scrims: a start-side gradient for the text block, a top strip so the transparent header stays legible, and a bottom vignette. */}
+    <div class="pointer-events-none absolute inset-0 bg-gradient-to-r from-black/70 via-black/35 to-transparent rtl:bg-gradient-to-l" aria-hidden="true" />
+    <div class="pointer-events-none absolute inset-x-0 top-0 h-[4.5rem] bg-gradient-to-b from-black/55 to-transparent" aria-hidden="true" />
+    <div class="pointer-events-none absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-black/45 to-transparent" aria-hidden="true" />
   </div>
   <div class="container-page relative flex h-full flex-col justify-end pb-14 sm:pb-20">
     <div class="max-w-xl animate-fade-up">
-      <p class="mb-4 text-sm font-semibold uppercase tracking-wider text-gold-deep">{t.home.heroKicker}</p>
-      <h1 class="font-heading text-balance text-4xl leading-[1.1] text-ink sm:text-5xl lg:text-6xl">
+      <p class="mb-4 text-sm font-semibold uppercase tracking-wider text-gold-on-dark">{t.home.heroKicker}</p>
+      <h1 class="font-heading text-balance text-4xl leading-[1.1] text-white sm:text-5xl lg:text-6xl">
         {t.home.heroTitle}
       </h1>
-      <p class="mt-6 text-balance text-lg leading-relaxed text-body">
+      <p class="mt-6 text-balance text-lg leading-relaxed text-white/85">
         {t.home.heroSubtitle}
       </p>
       <div class="mt-9 flex flex-wrap items-center gap-4">
         <Button href={getRelativeLocaleUrl(lang, 'contact')} variant="primary" class="px-7 py-3.5 text-base">
           {t.home.heroCtaPrimary}
         </Button>
-        <Button href={getRelativeLocaleUrl(lang, 'services')} variant="secondary" class="px-7 py-3.5 text-base">
+        <Button href={getRelativeLocaleUrl(lang, 'services')} variant="outline-on-dark" class="px-7 py-3.5 text-base">
           {t.home.heroCtaSecondary}
         </Button>
       </div>
@@ -211,5 +234,16 @@ const processIcons: IconName[] = ['consult', 'design', 'execute', 'handover'];
     };
     onScroll();
     window.addEventListener('scroll', onScroll, { passive: true });
+  }
+
+  const heroSlides = document.querySelectorAll<HTMLElement>('[data-hero-slide]');
+  if (heroSlides.length > 1 && !prefersReducedMotion) {
+    let activeIndex = 0;
+    setInterval(() => {
+      const nextIndex = (activeIndex + 1) % heroSlides.length;
+      heroSlides[activeIndex].classList.replace('opacity-100', 'opacity-0');
+      heroSlides[nextIndex].classList.replace('opacity-0', 'opacity-100');
+      activeIndex = nextIndex;
+    }, 5000);
   }
 </script>

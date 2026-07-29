@@ -1,7 +1,7 @@
 ---
 interface Props {
   href: string;
-  variant?: 'primary' | 'secondary' | 'ghost' | 'on-dark';
+  variant?: 'primary' | 'secondary' | 'ghost' | 'on-dark' | 'outline-on-dark';
   class?: string;
 }
 
@@ -12,6 +12,7 @@ const variants: Record<string, string> = {
   secondary: 'border border-gold/40 text-gold-deep hover:border-gold-dark hover:bg-gold-light/40',
   ghost: 'text-ink hover:bg-gold-light/40',
   'on-dark': 'bg-cream text-espresso hover:bg-white shadow-sm hover:shadow-md',
+  'outline-on-dark': 'border border-white/50 text-white hover:border-white hover:bg-white/10',
 };
 ---
 

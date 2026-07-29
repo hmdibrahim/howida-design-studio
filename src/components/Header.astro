@@ -41,7 +41,7 @@ const langSwitchHref = getRelativeLocaleUrl(other, path);
   <div class="container-page flex h-[4.5rem] items-center justify-between gap-4 py-3">
     <a href={getRelativeLocaleUrl(lang, '')} class="flex shrink-0 items-center gap-2.5 sm:gap-3">
       <Image src={iconOnCream} alt="" width={44} height={44} loading="eager" fetchpriority="high" class="h-10 w-10 sm:h-11 sm:w-11" />
-      <span class="text-lg font-semibold leading-none tracking-tight text-ink sm:text-xl">
+      <span class="logo-text text-lg font-semibold leading-none tracking-tight text-ink sm:text-xl">
         {t.meta.siteName}
       </span>
     </a>
@@ -53,7 +53,7 @@ const langSwitchHref = getRelativeLocaleUrl(other, path);
             href={item.href}
             aria-current={isActive(item.match) ? 'page' : undefined}
             class:list={[
-              'relative py-2 text-xs font-semibold uppercase tracking-[0.14em] text-body transition-colors hover:text-ink',
+              'nav-link relative py-2 text-xs font-semibold uppercase tracking-[0.14em] text-body transition-colors hover:text-ink',
               'after:absolute after:-bottom-0.5 after:start-0 after:h-px after:w-full after:origin-center after:scale-x-0 after:bg-gold after:transition-transform after:duration-300 after:ease-out hover:after:scale-x-100',
               { 'text-ink after:scale-x-100 after:bg-gold-dark': isActive(item.match) },
             ]}
@@ -67,7 +67,7 @@ const langSwitchHref = getRelativeLocaleUrl(other, path);
     <div class="hidden items-center gap-6 lg:flex">
       <a
         href={langSwitchHref}
-        class="text-xs font-semibold uppercase tracking-[0.14em] text-gold-deep transition-colors hover:text-gold-dark"
+        class="lang-switch text-xs font-semibold uppercase tracking-[0.14em] text-gold-deep transition-colors hover:text-gold-dark"
         hreflang={other}
       >
         {t.nav.switchLang}
@@ -83,7 +83,7 @@ const langSwitchHref = getRelativeLocaleUrl(other, path);
     <button
       type="button"
       id="menu-toggle"
-      class="flex h-11 w-11 items-center justify-center rounded-sm text-ink lg:hidden"
+      class="menu-toggle flex h-11 w-11 items-center justify-center rounded-sm text-ink lg:hidden"
       aria-expanded="false"
       aria-controls="mobile-nav"
     >
@@ -160,5 +160,23 @@ const langSwitchHref = getRelativeLocaleUrl(other, path);
     background-color: color-mix(in srgb, var(--color-cream) 95%, transparent);
     border-bottom-color: var(--color-hairline);
     backdrop-filter: blur(8px);
+  }
+
+  /* Transparent header sits over a photographic hero with its own dark top scrim
+     (see HomeView.astro), so nav text switches to light until scroll solidifies
+     the background — kept in sync with .is-scrolled toggled by the script below. */
+  header[data-transparent='true']:not(.is-scrolled) .logo-text,
+  header[data-transparent='true']:not(.is-scrolled) .nav-link,
+  header[data-transparent='true']:not(.is-scrolled) .lang-switch,
+  header[data-transparent='true']:not(.is-scrolled) .menu-toggle {
+    color: var(--color-cream);
+  }
+
+  header[data-transparent='true']:not(.is-scrolled) .nav-link:hover {
+    color: white;
+  }
+
+  header[data-transparent='true']:not(.is-scrolled) .nav-link::after {
+    background-color: var(--color-gold-on-dark);
   }
 </style>
