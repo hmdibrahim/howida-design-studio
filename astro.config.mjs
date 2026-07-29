@@ -11,7 +11,9 @@ export default defineConfig({
   site: process.env.PUBLIC_SITE_URL ?? 'https://www.howidadesignstudio.com',
   trailingSlash: 'never',
   output: 'static',
-  adapter: vercel(),
+  adapter: vercel({
+    webAnalytics: { enabled: true },
+  }),
   i18n: {
     defaultLocale: 'en',
     locales: ['en', 'ar'],
