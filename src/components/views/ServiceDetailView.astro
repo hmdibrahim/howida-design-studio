@@ -6,7 +6,26 @@ import type { Lang } from '../../i18n/ui';
 import Icon from '../Icon.astro';
 import ServiceCard from '../ServiceCard.astro';
 import CtaBand from '../CtaBand.astro';
-import PlaceholderImage from '../PlaceholderImage.astro';
+import ProjectPhoto from '../ProjectPhoto.astro';
+import servicePhoto0 from '../../assets/photos/project-living-room-wide-1.jpg';
+import servicePhoto1 from '../../assets/photos/project-living-room-wide-2.jpg';
+import servicePhoto2 from '../../assets/photos/project-seating-area-1.jpg';
+import servicePhoto3 from '../../assets/photos/project-seating-area-2.jpg';
+import servicePhoto4 from '../../assets/photos/project-display-shelving.jpg';
+import servicePhoto5 from '../../assets/photos/project-sofa-art-panel.jpg';
+import servicePhoto6 from '../../assets/photos/project-corner-sofa.jpg';
+import servicePhoto7 from '../../assets/photos/project-armchair-detail-1.jpg';
+
+const servicePhotoPool = [
+  servicePhoto0,
+  servicePhoto1,
+  servicePhoto2,
+  servicePhoto3,
+  servicePhoto4,
+  servicePhoto5,
+  servicePhoto6,
+  servicePhoto7,
+];
 
 interface Props {
   lang: Lang;
@@ -20,10 +39,11 @@ const slug = service.id.split('/')[1];
 
 const allServices = await getCollection('services', (entry) => entry.id.startsWith(`${lang}/`));
 const otherServices = allServices.filter((entry) => entry.id.split('/')[1] !== slug).sort((a, b) => a.data.order - b.data.order).slice(0, 3);
+const servicePhoto = servicePhotoPool[(service.data.order - 1) % servicePhotoPool.length];
 ---
 
 <section class="border-b border-hairline">
-  <PlaceholderImage ratio="wide" label={service.data.title} kenburns />
+  <ProjectPhoto src={servicePhoto} alt={service.data.title} ratio="wide" kenburns />
 </section>
 
 <section class="border-b border-hairline">

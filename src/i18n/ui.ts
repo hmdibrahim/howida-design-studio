@@ -81,6 +81,8 @@ interface Dictionary {
     title: string;
     introLead: string;
     introBody: string;
+    founderName: string;
+    founderTitle: string;
     valuesKicker: string;
     valuesTitle: string;
     values: { title: string; body: string }[];
@@ -252,6 +254,8 @@ export const ui: Record<Lang, Dictionary> = {
         'At Howida design studio, we believe every space deserves a design that reflects its owner’s personality and lifestyle.',
       introBody:
         'We provide complete interior design and execution services for residential and commercial projects, with careful attention to detail to ensure high quality and results that exceed expectations. From the first conversation about how you live or work, through to the final styling details, our team stays involved at every stage so the finished space is a genuine reflection of the people who use it.',
+      founderName: 'Howida',
+      founderTitle: 'Founder & Principal Designer',
       valuesKicker: 'What guides our work',
       valuesTitle: 'Our values',
       values: [
@@ -439,6 +443,8 @@ export const ui: Record<Lang, Dictionary> = {
       introLead: 'في Howida design studio، نؤمن بأن كل مساحة تستحق تصميمًا يعكس شخصية أصحابها ويلبي احتياجاتهم.',
       introBody:
         'نقدم خدمات التصميم الداخلي والتنفيذ المتكامل للمشاريع السكنية والتجارية، مع الاهتمام بأدق التفاصيل لضمان جودة عالية ونتائج تتجاوز التوقعات. من أول حديث حول طريقة سكنك أو عملك، وحتى أدق تفاصيل التنسيق النهائي، يبقى فريقنا حاضرًا في كل مرحلة لضمان أن تعكس المساحة النهائية هوية من يستخدمها فعلًا.',
+      founderName: 'هويدا',
+      founderTitle: 'المؤسسة والمصممة الرئيسية',
       valuesKicker: 'ما يوجّه عملنا',
       valuesTitle: 'قيمنا',
       values: [

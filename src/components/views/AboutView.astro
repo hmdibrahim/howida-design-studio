@@ -7,8 +7,9 @@ import type { Lang } from '../../i18n/ui';
 import SectionHeading from '../SectionHeading.astro';
 import CtaBand from '../CtaBand.astro';
 import Icon, { type IconName } from '../Icon.astro';
-import PlaceholderImage from '../PlaceholderImage.astro';
+import ProjectPhoto from '../ProjectPhoto.astro';
 import RuleDivider from '../RuleDivider.astro';
+import founderPhoto from '../../assets/photos/founder-portrait.jpg';
 
 interface Props {
   lang: Lang;
@@ -36,7 +37,11 @@ const processIcons: IconName[] = ['consult', 'design', 'execute', 'handover'];
       <p class="prose-body mt-5 max-w-2xl text-base">{t.about.introBody}</p>
     </div>
     <div class="lg:col-span-5" data-reveal style="--reveal-delay: 120ms">
-      <PlaceholderImage ratio="tall" label="About studio photo placeholder" kenburns class="mx-auto max-w-sm" />
+      <ProjectPhoto src={founderPhoto} alt={t.about.founderName} ratio="tall" kenburns class="mx-auto max-w-sm" />
+      <p class="mt-4 text-center">
+        <span class="font-heading text-lg text-ink">{t.about.founderName}</span>
+        <span class="mx-auto mt-0.5 block text-xs font-semibold uppercase tracking-wider text-gold-deep">{t.about.founderTitle}</span>
+      </p>
     </div>
   </div>
 </section>
