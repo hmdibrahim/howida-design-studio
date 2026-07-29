@@ -1,0 +1,192 @@
+From 6725a168212bbb3ddea77de3a62d383911dd0e35 Mon Sep 17 00:00:00 2001
+From: Claude <noreply@anthropic.com>
+Date: Wed, 29 Jul 2026 06:50:48 +0000
+Subject: [PATCH] Fix hero text contrast and turn it into a rotating photo
+ slideshow
+
+- Hero now cross-fades through 5 real project photos every 5s (paused
+  under prefers-reduced-motion) instead of a single static image
+- Add a directional scrim (RTL-aware) plus a top strip and bottom
+  vignette so heading/subtitle/buttons stay legible over any photo
+- Hero text switches to white/cream, new outline-on-dark button variant
+  for the secondary CTA
+- Header: transparent-over-hero nav/logo text switches to light until
+  scrolled, matching the new top scrim
+---
+ src/components/Button.astro         |  3 +-
+ src/components/Header.astro         | 26 ++++++++++++++---
+ src/components/views/HomeView.astro | 44 +++++++++++++++++++++++++----
+ 3 files changed, 63 insertions(+), 10 deletions(-)
+
+diff --git a/src/components/Button.astro b/src/components/Button.astro
+index 1ac8de8..876edff 100644
+--- a/src/components/Button.astro
++++ b/src/components/Button.astro
+@@ -1,7 +1,7 @@
+ ---
+ interface Props {
+   href: string;
+-  variant?: 'primary' | 'secondary' | 'ghost' | 'on-dark';
++  variant?: 'primary' | 'secondary' | 'ghost' | 'on-dark' | 'outline-on-dark';
+   class?: string;
+ }
+ 
+@@ -12,6 +12,7 @@ const variants: Record<string, string> = {
+   secondary: 'border border-gold/40 text-gold-deep hover:border-gold-dark hover:bg-gold-light/40',
+   ghost: 'text-ink hover:bg-gold-light/40',
+   'on-dark': 'bg-cream text-espresso hover:bg-white shadow-sm hover:shadow-md',
++  'outline-on-dark': 'border border-white/50 text-white hover:border-white hover:bg-white/10',
+ };
+ ---
+ 
+diff --git a/src/components/Header.astro b/src/components/Header.astro
+index 790bdb9..713ed27 100644
+--- a/src/components/Header.astro
++++ b/src/components/Header.astro
+@@ -41,7 +41,7 @@ const langSwitchHref = getRelativeLocaleUrl(other, path);
+   <div class="container-page flex h-[4.5rem] items-center justify-between gap-4 py-3">
+     <a href={getRelativeLocaleUrl(lang, '')} class="flex shrink-0 items-center gap-2.5 sm:gap-3">
+       <Image src={iconOnCream} alt="" width={44} height={44} loading="eager" fetchpriority="high" class="h-10 w-10 sm:h-11 sm:w-11" />
+-      <span class="text-lg font-semibold leading-none tracking-tight text-ink sm:text-xl">
++      <span class="logo-text text-lg font-semibold leading-none tracking-tight text-ink sm:text-xl">
+         {t.meta.siteName}
+       </span>
+     </a>
+@@ -53,7 +53,7 @@ const langSwitchHref = getRelativeLocaleUrl(other, path);
+             href={item.href}
+             aria-current={isActive(item.match) ? 'page' : undefined}
+             class:list={[
+-              'relative py-2 text-xs font-semibold uppercase tracking-[0.14em] text-body transition-colors hover:text-ink',
++              'nav-link relative py-2 text-xs font-semibold uppercase tracking-[0.14em] text-body transition-colors hover:text-ink',
+               'after:absolute after:-bottom-0.5 after:start-0 after:h-px after:w-full after:origin-center after:scale-x-0 after:bg-gold after:transition-transform after:duration-300 after:ease-out hover:after:scale-x-100',
+               { 'text-ink after:scale-x-100 after:bg-gold-dark': isActive(item.match) },
+             ]}
+@@ -67,7 +67,7 @@ const langSwitchHref = getRelativeLocaleUrl(other, path);
+     <div class="hidden items-center gap-6 lg:flex">
+       <a
+         href={langSwitchHref}
+-        class="text-xs font-semibold uppercase tracking-[0.14em] text-gold-deep transition-colors hover:text-gold-dark"
++        class="lang-switch text-xs font-semibold uppercase tracking-[0.14em] text-gold-deep transition-colors hover:text-gold-dark"
+         hreflang={other}
+       >
+         {t.nav.switchLang}
+@@ -83,7 +83,7 @@ const langSwitchHref = getRelativeLocaleUrl(other, path);
+     <button
+       type="button"
+       id="menu-toggle"
+-      class="flex h-11 w-11 items-center justify-center rounded-sm text-ink lg:hidden"
++      class="menu-toggle flex h-11 w-11 items-center justify-center rounded-sm text-ink lg:hidden"
+       aria-expanded="false"
+       aria-controls="mobile-nav"
+     >
+@@ -161,4 +161,22 @@ const langSwitchHref = getRelativeLocaleUrl(other, path);
+     border-bottom-color: var(--color-hairline);
+     backdrop-filter: blur(8px);
+   }
++
++  /* Transparent header sits over a photographic hero with its own dark top scrim
++     (see HomeView.astro), so nav text switches to light until scroll solidifies
++     the background — kept in sync with .is-scrolled toggled by the script below. */
++  header[data-transparent='true']:not(.is-scrolled) .logo-text,
++  header[data-transparent='true']:not(.is-scrolled) .nav-link,
++  header[data-transparent='true']:not(.is-scrolled) .lang-switch,
++  header[data-transparent='true']:not(.is-scrolled) .menu-toggle {
++    color: var(--color-cream);
++  }
++
++  header[data-transparent='true']:not(.is-scrolled) .nav-link:hover {
++    color: white;
++  }
++
++  header[data-transparent='true']:not(.is-scrolled) .nav-link::after {
++    background-color: var(--color-gold-on-dark);
++  }
+ </style>
+diff --git a/src/components/views/HomeView.astro b/src/components/views/HomeView.astro
+index 0dfdf96..1d3dfa4 100644
+--- a/src/components/views/HomeView.astro
++++ b/src/components/views/HomeView.astro
+@@ -1,6 +1,7 @@
+ ---
+ import { getRelativeLocaleUrl } from 'astro:i18n';
+ import { getCollection } from 'astro:content';
++import { Image } from 'astro:assets';
+ import { useTranslations } from '../../i18n/utils';
+ import type { Lang } from '../../i18n/ui';
+ import SectionHeading from '../SectionHeading.astro';
+@@ -28,6 +29,7 @@ const allServices = await getCollection('services', (entry) => entry.id.startsWi
+ const services = allServices.sort((a, b) => a.data.order - b.data.order);
+ 
+ const portfolioPhotos = [portfolioPhoto1, portfolioPhoto2, portfolioPhoto3, portfolioPhoto4, portfolioPhoto5, portfolioPhoto6];
++const heroSlides = [heroPhoto, portfolioPhoto4, portfolioPhoto2, portfolioPhoto5, portfolioPhoto3];
+ 
+ const whyIcons: IconName[] = ['users', 'layers', 'message-circle', 'map'];
+ const processIcons: IconName[] = ['consult', 'design', 'execute', 'handover'];
+@@ -35,22 +37,43 @@ const processIcons: IconName[] = ['consult', 'design', 'execute', 'handover'];
+ 
+ <section class="relative -mt-[4.5rem] h-[32rem] overflow-hidden sm:h-[40rem] lg:h-[46rem]">
+   <div class="absolute inset-0 h-[120%]" data-parallax>
+-    <ProjectPhoto src={heroPhoto} alt="" ratio="hero" kenburns widths={[640, 1024, 1600, 2000]} class="h-full w-full" />
++    {
++      heroSlides.map((slide, index) => (
++        <Image
++          src={slide}
++          alt=""
++          loading={index === 0 ? 'eager' : 'lazy'}
++          fetchpriority={index === 0 ? 'high' : undefined}
++          widths={[640, 1024, 1600, 2000]}
++          sizes="100vw"
++          data-hero-slide
++          class:list={[
++            'absolute inset-0 h-full w-full object-cover transition-opacity duration-[1800ms] ease-in-out',
++            index === 0 ? 'opacity-100' : 'opacity-0',
++            { 'animate-kenburns': index === 0 },
++          ]}
++        />
++      ))
++    }
++    {/* Scrims: a start-side gradient for the text block, a top strip so the transparent header stays legible, and a bottom vignette. */}
++    <div class="pointer-events-none absolute inset-0 bg-gradient-to-r from-black/70 via-black/35 to-transparent rtl:bg-gradient-to-l" aria-hidden="true" />
++    <div class="pointer-events-none absolute inset-x-0 top-0 h-[4.5rem] bg-gradient-to-b from-black/55 to-transparent" aria-hidden="true" />
++    <div class="pointer-events-none absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-black/45 to-transparent" aria-hidden="true" />
+   </div>
+   <div class="container-page relative flex h-full flex-col justify-end pb-14 sm:pb-20">
+     <div class="max-w-xl animate-fade-up">
+-      <p class="mb-4 text-sm font-semibold uppercase tracking-wider text-gold-deep">{t.home.heroKicker}</p>
+-      <h1 class="font-heading text-balance text-4xl leading-[1.1] text-ink sm:text-5xl lg:text-6xl">
++      <p class="mb-4 text-sm font-semibold uppercase tracking-wider text-gold-on-dark">{t.home.heroKicker}</p>
++      <h1 class="font-heading text-balance text-4xl leading-[1.1] text-white sm:text-5xl lg:text-6xl">
+         {t.home.heroTitle}
+       </h1>
+-      <p class="mt-6 text-balance text-lg leading-relaxed text-body">
++      <p class="mt-6 text-balance text-lg leading-relaxed text-white/85">
+         {t.home.heroSubtitle}
+       </p>
+       <div class="mt-9 flex flex-wrap items-center gap-4">
+         <Button href={getRelativeLocaleUrl(lang, 'contact')} variant="primary" class="px-7 py-3.5 text-base">
+           {t.home.heroCtaPrimary}
+         </Button>
+-        <Button href={getRelativeLocaleUrl(lang, 'services')} variant="secondary" class="px-7 py-3.5 text-base">
++        <Button href={getRelativeLocaleUrl(lang, 'services')} variant="outline-on-dark" class="px-7 py-3.5 text-base">
+           {t.home.heroCtaSecondary}
+         </Button>
+       </div>
+@@ -212,4 +235,15 @@ const processIcons: IconName[] = ['consult', 'design', 'execute', 'handover'];
+     onScroll();
+     window.addEventListener('scroll', onScroll, { passive: true });
+   }
++
++  const heroSlides = document.querySelectorAll<HTMLElement>('[data-hero-slide]');
++  if (heroSlides.length > 1 && !prefersReducedMotion) {
++    let activeIndex = 0;
++    setInterval(() => {
++      const nextIndex = (activeIndex + 1) % heroSlides.length;
++      heroSlides[activeIndex].classList.replace('opacity-100', 'opacity-0');
++      heroSlides[nextIndex].classList.replace('opacity-0', 'opacity-100');
++      activeIndex = nextIndex;
++    }, 5000);
++  }
+ </script>
+-- 
+2.43.0
+

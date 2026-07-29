@@ -4,12 +4,14 @@ import tailwindcss from '@tailwindcss/vite';
 import sitemap from '@astrojs/sitemap';
 import node from '@astrojs/node';
 
+import vercel from '@astrojs/vercel';
+
 // https://astro.build/config
 export default defineConfig({
   site: process.env.PUBLIC_SITE_URL ?? 'https://www.howidadesignstudio.com',
   trailingSlash: 'never',
   output: 'static',
-  adapter: node({ mode: 'standalone' }),
+  adapter: vercel(),
   i18n: {
     defaultLocale: 'en',
     locales: ['en', 'ar'],
