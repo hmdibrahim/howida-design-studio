@@ -107,28 +107,6 @@ interface Dictionary {
     kicker: string;
     title: string;
     subtitle: string;
-    formTitle: string;
-    nameLabel: string;
-    namePlaceholder: string;
-    emailLabel: string;
-    emailPlaceholder: string;
-    phoneLabel: string;
-    phonePlaceholder: string;
-    serviceLabel: string;
-    servicePlaceholder: string;
-    messageLabel: string;
-    messagePlaceholder: string;
-    submit: string;
-    submitting: string;
-    privacyNote: string;
-    successTitle: string;
-    successBody: string;
-    errorTitle: string;
-    errorBody: string;
-    errorRequired: string;
-    errorEmail: string;
-    errorPhone: string;
-    errorMessage: string;
     infoTitle: string;
     phoneLabelInfo: string;
     emailLabelInfo: string;
@@ -299,30 +277,7 @@ export const ui: Record<Lang, Dictionary> = {
     contact: {
       kicker: 'Get in Touch',
       title: 'Contact Us',
-      subtitle:
-        'For inquiries and consultations, feel free to contact us anytime. Tell us about your project and we will get back to you shortly.',
-      formTitle: 'Send us a message',
-      nameLabel: 'Full name',
-      namePlaceholder: 'Your name',
-      emailLabel: 'Email address',
-      emailPlaceholder: 'you@example.com',
-      phoneLabel: 'Phone number (optional)',
-      phonePlaceholder: '05X XXX XXXX',
-      serviceLabel: 'Service of interest',
-      servicePlaceholder: 'Select a service',
-      messageLabel: 'Message',
-      messagePlaceholder: 'Tell us a little about your space and what you are looking for...',
-      submit: 'Send Message',
-      submitting: 'Sending...',
-      privacyNote: 'We will only use these details to respond to your enquiry.',
-      successTitle: 'Message sent',
-      successBody: 'Thank you — we have received your message and will get back to you soon.',
-      errorTitle: 'Something went wrong',
-      errorBody: 'Your message could not be sent. Please try again, or contact us directly by phone or email.',
-      errorRequired: 'This field is required.',
-      errorEmail: 'Please enter a valid email address.',
-      errorPhone: 'Please enter a valid phone number.',
-      errorMessage: 'Please enter a message of at least 10 characters.',
+      subtitle: 'For inquiries and consultations, feel free to reach out anytime using the details below.',
       infoTitle: 'Contact details',
       phoneLabelInfo: 'Phone',
       emailLabelInfo: 'Email',
@@ -487,29 +442,7 @@ export const ui: Record<Lang, Dictionary> = {
     contact: {
       kicker: 'تواصل معنا',
       title: 'تواصل معنا',
-      subtitle: 'للاستفسارات وحجز الاستشارات، تواصلوا معنا في أي وقت. أخبرنا عن مشروعك وسنعاود التواصل معك قريبًا.',
-      formTitle: 'أرسل لنا رسالة',
-      nameLabel: 'الاسم الكامل',
-      namePlaceholder: 'اسمك',
-      emailLabel: 'البريد الإلكتروني',
-      emailPlaceholder: 'you@example.com',
-      phoneLabel: 'رقم الهاتف (اختياري)',
-      phonePlaceholder: '05X XXX XXXX',
-      serviceLabel: 'الخدمة المطلوبة',
-      servicePlaceholder: 'اختر خدمة',
-      messageLabel: 'الرسالة',
-      messagePlaceholder: 'أخبرنا قليلًا عن مساحتك وما تبحث عنه...',
-      submit: 'إرسال الرسالة',
-      submitting: 'جارٍ الإرسال...',
-      privacyNote: 'سنستخدم هذه البيانات فقط للرد على استفسارك.',
-      successTitle: 'تم إرسال الرسالة',
-      successBody: 'شكرًا لك — لقد استلمنا رسالتك وسنتواصل معك قريبًا.',
-      errorTitle: 'حدث خطأ ما',
-      errorBody: 'تعذّر إرسال رسالتك. يرجى المحاولة مرة أخرى، أو التواصل معنا مباشرة عبر الهاتف أو البريد الإلكتروني.',
-      errorRequired: 'هذا الحقل مطلوب.',
-      errorEmail: 'يرجى إدخال بريد إلكتروني صحيح.',
-      errorPhone: 'يرجى إدخال رقم هاتف صحيح.',
-      errorMessage: 'يرجى إدخال رسالة لا تقل عن 10 أحرف.',
+      subtitle: 'للاستفسارات وحجز الاستشارات، تواصلوا معنا في أي وقت عبر البيانات أدناه.',
       infoTitle: 'بيانات التواصل',
       phoneLabelInfo: 'الهاتف',
       emailLabelInfo: 'البريد الإلكتروني',

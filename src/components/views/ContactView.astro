@@ -1,22 +1,14 @@
 ---
-import { getCollection } from 'astro:content';
 import { useTranslations } from '../../i18n/utils';
 import type { Lang } from '../../i18n/ui';
 import Icon from '../Icon.astro';
-import ContactForm from '../ContactForm.astro';
 
 interface Props {
   lang: Lang;
-  status?: 'success' | 'error' | null;
 }
 
-const { lang, status = null } = Astro.props;
+const { lang } = Astro.props;
 const t = useTranslations(lang);
-
-const allServices = await getCollection('services', (entry) => entry.id.startsWith(`${lang}/`));
-const services = allServices
-  .sort((a, b) => a.data.order - b.data.order)
-  .map((entry) => ({ slug: entry.id.split('/')[1], title: entry.data.title }));
 
 const mapsQuery = encodeURIComponent('Abu Dhabi, United Arab Emirates');
 ---
@@ -29,12 +21,8 @@ const mapsQuery = encodeURIComponent('Abu Dhabi, United Arab Emirates');
       <p class="mt-5 text-balance text-lg leading-relaxed text-body">{t.contact.subtitle}</p>
     </div>
 
-    <div class="mt-12 grid gap-8 lg:grid-cols-12 lg:gap-10">
-      <div class="lg:col-span-7" data-reveal>
-        <ContactForm lang={lang} services={services} status={status} />
-      </div>
-
-      <aside class="lg:col-span-5" data-reveal style="--reveal-delay: 120ms">
+    <div class="mt-12 max-w-2xl" data-reveal>
+      <aside>
         <div class="rounded-sm border border-hairline bg-cream-dark/60 p-6 sm:p-8">
           <h2 class="text-sm font-semibold uppercase tracking-wider text-gold-deep">{t.contact.infoTitle}</h2>
           <ul class="mt-5 space-y-5">
